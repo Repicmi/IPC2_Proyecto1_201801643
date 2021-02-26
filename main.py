@@ -1,6 +1,72 @@
 menu = True
 datos = ""
 
+
+class Nodo:
+    def __init__(self, objeto):
+        self.objeto = objeto
+        self.siguiente = None
+
+
+class ListaCircualr:
+    def __init__(self):
+        self.primero = None
+        self.ultimo = None
+
+    def agregarNodo(self, dato):
+        nuevo = Nodo(dato)
+        if self.primero is None:
+            self.primero = nuevo
+            self.ultimo = nuevo
+            self.ultimo.siguiente = self.primero
+        else:
+            self.ultimo.siguiente = nuevo
+            nuevo.siguiente = self.primero
+            self.primero = nuevo
+
+    def agregarNodoFinal(self, dato):
+        nuevo = Nodo(dato)
+        if self.primero is None:
+            self.primero = nuevo
+            self.ultimo = nuevo
+            self.ultimo.siguiente = nuevo
+        else:
+            self.ultimo.siguiente = nuevo
+            self.ultimo = nuevo
+            self.ultimo.siguiente = self.primero
+
+    def quitarNodoInicio(self):
+        if self.primero is None:
+            print("Imposible eliminar elemento, lista vacía")
+        elif self.primero == self.ultimo:
+            self.primero = None
+            self.ultimo = None
+        else:
+            temp = self.primero
+            self.primero = self.primero.siguiente
+            self.ultimo.siguiente = self.primero
+            temp = None
+
+    def quitarNodoFinal(self):
+        if self.primero is None:
+            print("Imposible eliminar elemento, lista vacía")
+        elif self.primero == self.ultimo:
+            self.primero = None
+            self.ultimo = None
+        else:
+            correcto = True
+            temp = self.primero
+            while correcto:
+                if temp.siguiente == self.ultimo:
+                    temp2 = self.ultimo
+                    self.ultimo = temp
+                    self.ultimo.siguiente = self.primero
+                    temp2 = None
+                    correcto = False
+                else:
+                    temp = temp.siguiente
+
+
 while menu:
     print("Menu Principal")
     print("     1.- Cargar archivo")
