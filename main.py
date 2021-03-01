@@ -1,3 +1,4 @@
+import xml.etree.ElementTree as ET
 menu = True
 datos = ""
 
@@ -90,6 +91,16 @@ while menu:
 
     elif opcion == "2":
         print("Procesando archivo...")
+        arbol = ET.fromstring(datos)
+        for child in arbol:
+            print("Imprimiendo: ")
+            print(child.tag,child.attrib) #Nos da el elemento nombre, n y m :D
+            for miniChild in child:
+                print(miniChild.attrib) #nos muestra el contenido de las X (X = 1, Y = 2) etc
+        print(arbol[0][1].text) #Nos muestra el contenido en ese espacio x,y
+        for elemento in arbol.findall("matriz"):
+            print("imprimiendo elemento:")
+            print(elemento.findall("nombre") + elemento.findall("n"))
     elif opcion == "3":
         print("Escribiendo archivo de salida")
     elif opcion == "4":
