@@ -1,6 +1,15 @@
 import xml.etree.ElementTree as ET
 menu = True
 datos = ""
+matrices = []
+
+
+class DatosMatriz:
+    def __init__(self, datosArbol, nombre, n, m):
+        self.datosArbol = datosArbol
+        self.nombre = nombre
+        self.n = n
+        self.m = m
 
 
 class Nodo:
@@ -93,14 +102,17 @@ while menu:
         print("Procesando archivo...")
         arbol = ET.fromstring(datos)
         for child in arbol:
+            print("Nombre = " + child.get("nombre") + " n = " + child.get("n") + " m = " + child.get("m")) #AQUI SALE LA N LET'S FUCKING GOOOO
             print("Imprimiendo: ")
-            print(child.tag,child.attrib) #Nos da el elemento nombre, n y m :D
-            for miniChild in child:
-                print(miniChild.attrib) #nos muestra el contenido de las X (X = 1, Y = 2) etc
-        print(arbol[0][1].text) #Nos muestra el contenido en ese espacio x,y
-        for elemento in arbol.findall("matriz"):
-            print("imprimiendo elemento:")
-            print(elemento.findall("nombre") + elemento.findall("n"))
+            print(child.tag, child.attrib) #Nos da el elemento nombre, n y m :D
+            nuevoDato = DatosMatriz(arbol, child.get("nombre"), child.get("n"), child.get("m"))
+            matrices.append(nuevoDato)
+            #for miniChild in child:
+            #    print(miniChild.attrib) #nos muestra el contenido de las X (X = 1, Y = 2) etc
+        #print(arbol[0][1].text) #Nos muestra el contenido en ese espacio x,y
+        # for elemento in arbol.findall("matriz"):
+         #print("imprimiendo elemento:")
+          #print(elemento.findall("nombre") + elemento.findall("n"))
     elif opcion == "3":
         print("Escribiendo archivo de salida")
     elif opcion == "4":
