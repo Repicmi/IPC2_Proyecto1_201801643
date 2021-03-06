@@ -1,3 +1,4 @@
+import os
 import xml.etree.ElementTree as ET
 menu = True
 datos = ""
@@ -80,13 +81,24 @@ class ListaCircualr:
 
 def crearGrafica(datos):
     repeticion = 1
+    datos_grafo = 'digraph G{ \n' \
+                  'A[label="' + datos.nombre + '" shape="box", style=filled, fillcolor="gray"]\n' \
+                  'B[label="Dimensiones n = ' + datos.n + ' m = ' + datos.m + ' " shape="box", style=filled, fillcolor="gray"]\n' \
+                  'A -> B\n' \
+
     for i in range(datos.grupo):
         if repeticion == datos.grupo:
             print("AHUEVO, grupo de datos: " + str(repeticion))
+
         else:
             print("No se pudo banda, grupo: " + str(repeticion))
         repeticion += 1
-
+    datos_grafo += "}"
+    file = open("grafo.dot", "w")
+    file.write(datos_grafo)
+    file.close()
+    os.system("dot -Tpng grafo.dot -Gcharset=latin1 -o grafo.png ")
+    os.startfile("grafo.png")
 
 
 while menu:
