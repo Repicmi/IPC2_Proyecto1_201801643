@@ -1,5 +1,17 @@
+import os
+import xml.etree.ElementTree as ET
 menu = True
 datos = ""
+matrices = []
+
+
+class DatosMatriz:
+    def __init__(self, datosArbol, nombre, n, m, grupo):
+        self.datosArbol = datosArbol
+        self.nombre = nombre
+        self.n = n
+        self.m = m
+        self.grupo = grupo
 
 
 class Nodo:
@@ -8,7 +20,7 @@ class Nodo:
         self.siguiente = None
 
 
-class ListaCircualr:
+class ListaCircular:
     def __init__(self):
         self.primero = None
         self.ultimo = None
@@ -67,6 +79,59 @@ class ListaCircualr:
                     temp = temp.siguiente
 
 
+def crearGrafica(datos):
+    repeticion = 1
+    columna = 0
+    fila = 0
+    contenido = [[0 for x in range(int(datos.m))] for y in range(int(datos.n))]
+
+    for x in range(int(datos.n)):
+        for y in range(int(datos.m)):
+            if datos.grupo > 1:
+                fila = datos.grupo-1
+
+            contenido[x][y] = datos.datosArbol[fila][columna].text
+            columna += 1
+
+
+    datos_grafo = 'digraph G{ \n' \
+                  'A[label="' + datos.nombre + '" shape="box", style=filled, fillcolor="burlywood"]\n' \
+                  'B[label="Dimensiones n = ' + datos.n + ' m = ' + datos.m + ' " shape="box", style=filled, fillcolor="burlywood"]\n' \
+                  'A -> B\n' \
+
+    for i in range(datos.grupo):
+        if repeticion == datos.grupo:
+            numLabel = 0
+            contador = 0
+            primero = 0
+            ene = int(datos.n)
+            eme = int(datos.m)
+            #print("AHUEVO, grupo de datos: " + str(repeticion))
+            for a in range(ene):
+                for b in range(eme):
+                    contador += 1
+                    datos_grafo += str(numLabel) + '[label="' + str(contenido[a][b]) + '" shape="egg", style=filled, fillcolor="burlywood1"]\n'
+                    if primero == 0:
+                        datos_grafo += "B -> " + str(numLabel) + " \n"
+                        primero += 1
+                    if contador == 2:
+                        datos_grafo += str(numLabel-1) + ' -> ' + str(numLabel) + "\n"
+                        contador = 0
+                        if b < eme-1:
+                            datos_grafo += str(numLabel) + ' -> ' + str(numLabel+1) + "\n"
+                    numLabel += 1
+                primero = 0
+        else:
+            print("No se pudo banda, grupo: " + str(repeticion))
+        repeticion += 1
+    datos_grafo += "}"
+    file = open("grafo.dot", "w")
+    file.write(datos_grafo)
+    file.close()
+    os.system("dot -Tpng grafo.dot -Gcharset=latin1 -o grafo.png ")
+    os.startfile("grafo.png")
+
+
 while menu:
     print("Menu Principal")
     print("     1.- Cargar archivo")
@@ -90,6 +155,18 @@ while menu:
 
     elif opcion == "2":
         print("Procesando archivo...")
+        arbol = ET.fromstring(datos)
+        childNum = 1
+        for child in arbol:
+            print("Nombre = " + child.get("nombre") + " n = " + child.get("n") + " m = " + child.get("m")) #AQUI SALE LA N LET'S FUCKING GOOOO
+            print("Imprimiendo grupo de datos: " + str(childNum))
+            print(child.tag, child.attrib) #Nos da el elemento nombre, n y m :D
+            nuevoDato = DatosMatriz(arbol, child.get("nombre"), child.get("n"), child.get("m"), childNum)
+            matrices.append(nuevoDato)
+            childNum += 1
+
+        print(arbol[0][3].text) #Nos muestra el contenido en ese espacio x,y
+
     elif opcion == "3":
         print("Escribiendo archivo de salida")
     elif opcion == "4":
@@ -101,7 +178,9 @@ while menu:
         print("Semestre actual: 4to Semestre")
         input("Presione ENTER para continuar...")
     elif opcion == "5":
-        print("Generando gráfica...")
+        print("Generando gráfica(s)...")
+        for elemento in matrices:
+            crearGrafica(elemento)
     elif opcion == "6":
         print("Gracias por usar el programa!")
         menu = False
