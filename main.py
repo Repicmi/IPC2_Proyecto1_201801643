@@ -20,7 +20,7 @@ class Nodo:
         self.siguiente = None
 
 
-class ListaCircualr:
+class ListaCircular:
     def __init__(self):
         self.primero = None
         self.ultimo = None
@@ -81,15 +81,46 @@ class ListaCircualr:
 
 def crearGrafica(datos):
     repeticion = 1
+    columna = 0
+    fila = 0
+    contenido = [[0 for x in range(int(datos.m))] for y in range(int(datos.n))]
+
+    for x in range(int(datos.n)):
+        for y in range(int(datos.m)):
+            if datos.grupo > 1:
+                fila = datos.grupo-1
+
+            contenido[x][y] = datos.datosArbol[fila][columna].text
+            columna += 1
+
+
     datos_grafo = 'digraph G{ \n' \
-                  'A[label="' + datos.nombre + '" shape="box", style=filled, fillcolor="gray"]\n' \
-                  'B[label="Dimensiones n = ' + datos.n + ' m = ' + datos.m + ' " shape="box", style=filled, fillcolor="gray"]\n' \
+                  'A[label="' + datos.nombre + '" shape="box", style=filled, fillcolor="burlywood"]\n' \
+                  'B[label="Dimensiones n = ' + datos.n + ' m = ' + datos.m + ' " shape="box", style=filled, fillcolor="burlywood"]\n' \
                   'A -> B\n' \
 
     for i in range(datos.grupo):
         if repeticion == datos.grupo:
-            print("AHUEVO, grupo de datos: " + str(repeticion))
-
+            numLabel = 0
+            contador = 0
+            primero = 0
+            ene = int(datos.n)
+            eme = int(datos.m)
+            #print("AHUEVO, grupo de datos: " + str(repeticion))
+            for a in range(ene):
+                for b in range(eme):
+                    contador += 1
+                    datos_grafo += str(numLabel) + '[label="' + str(contenido[a][b]) + '" shape="egg", style=filled, fillcolor="burlywood1"]\n'
+                    if primero == 0:
+                        datos_grafo += "B -> " + str(numLabel) + " \n"
+                        primero += 1
+                    if contador == 2:
+                        datos_grafo += str(numLabel-1) + ' -> ' + str(numLabel) + "\n"
+                        contador = 0
+                        if b < eme-1:
+                            datos_grafo += str(numLabel) + ' -> ' + str(numLabel+1) + "\n"
+                    numLabel += 1
+                primero = 0
         else:
             print("No se pudo banda, grupo: " + str(repeticion))
         repeticion += 1
@@ -134,7 +165,7 @@ while menu:
             matrices.append(nuevoDato)
             childNum += 1
 
-        #print(arbol[0][1].text) #Nos muestra el contenido en ese espacio x,y
+        print(arbol[0][3].text) #Nos muestra el contenido en ese espacio x,y
 
     elif opcion == "3":
         print("Escribiendo archivo de salida")
